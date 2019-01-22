@@ -1,6 +1,9 @@
 package com.bytedance.android.lesson.restapi.solution.utils;
 
 
+import com.bytedance.android.lesson.restapi.solution.bean.Cat;
+import com.bytedance.android.lesson.restapi.solution.newtork.ICatService;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,7 +11,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Scanner;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author Xavier.S
@@ -42,6 +52,17 @@ public class NetworkUtils {
         }
         return result;
     }
+
+    public static void getResponseWithRetrofitAsync(Callback<List<Cat>> callback) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.thecatapi.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        retrofit.create(ICatService.class).randomCat(5).
+                enqueue(callback);
+    }
+
 
     private static String readStream(final InputStream inputStream) {
         final Scanner scanner = new Scanner(inputStream);
